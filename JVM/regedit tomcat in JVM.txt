@@ -1,0 +1,9 @@
+﻿服务器jvm内存设置
+-Xms1024m
+-Xmx2048m
+-XX:PermSize=192m
+-XX:MaxPermSize=556m
+-verbose:gc -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -Xloggc:d:\iVMS-7800\ivms_install\apps\tomcat-lite/logs/tomcat_gc.log
+-Dcatalina.base=d:\00\ivms_install\apps\tomcat-lite
+
+设置jvm后须重启tomcat服务,才可生效
