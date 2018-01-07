@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd" 
+			default-autowire="byName">
+	
+	<bean id="propertyConfigurer" class="com.hikvision.security.patch.spring.SecurityPropertyPlaceHolderConfigurer">
+		<property name="locations">
+	  		<list>    
+	  			<value>classpath:system.properties</value>	  			
+	  		</list>
+		</property> 
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+	
+	<import resource="classpath:spring/swdf-extend-cms-bean.xml"/>
+	<import resource="classpath:spring/swdf-core-bean.xml"/>
+	<import resource="classpath:com/hikvision/swdf/core/lock/db/spring-bean.xml"/>
+	<import resource="classpath:spring-mmp/spring-swdf-db.xml"/>
+	<import resource="classpath:spring-mmp/spring-bean.xml"/>
+	<import resource="classpath:spring-mmp/spring-sys-ws.xml"/>
+	<bean id="sessionProcessor" class="com.hikvision.swdf.www.session.CacheSessionProcessor"/>
+
+	<!-- 数据连接池配置 -->
+    <bean id="mmpDataSource" class="com.hikvision.ivms6.cms.core.db.HikProxoolDataSource" p:driver="${hibernate.connection.driver_class}" p:driverUrl="${hibernate.connection.url}" p:user="${hibernate.connection.username}"
+		p:password="${hibernate.connection.password}" p:alias="${proxool.pool_alias}" p:houseKeepingTestSql="${proxool.house-keeping-test-sql}" p:testBeforeUse="${proxool.test-before-use}"
+		p:maximumConnectionCount="${proxool.maximum-connection-count}" p:minimumConnectionCount="${proxool.minimum-connection-count}" p:prototypeCount="${proxool.prototype-count}"
+		p:trace="true" />
+    
+    <!-- mysql entity interceptor 4 hiberante -->
+	<bean name="hikbaseEntityInterceptor" class="com.hikvision.extend.hibernate.interceptor.HikBaseEntityInterceptor" p:dialectName="${hibernate.dialect}"/>
+
+	<!-- Hibernate SessionFactory -->
+	<bean id="mmpSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" p:dataSource-ref="mmpDataSource">
+		<property name="mappingLocations">
+           <list>
+               <value>classpath*:com/hikvision/ivms/vms/module/*/*.hbm.xml</value>
+               <value>classpath*:hibernate/*.hbm.xml</value>
+           </list>           
+        </property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.connection.release_mode">after_transaction</prop>
+				<prop key="javax.persistence.validation.mode">none</prop> 				
+			</props>
+		</property>
+		<property name="eventListeners">
+			<map>
+				<entry key="merge">
+					<bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener" />
+				</entry>
+			</map>
+		</property>
+		<property name="entityInterceptor" ref="hikbaseEntityInterceptor" />
+	</bean>	
+	
+	<bean id="pageHibernateTemplate" class="com.hikvision.extend.hibernate.template.PageHibernateTemplate">
+		<property name="sessionFactory" ref="mmpSessionFactory" />
+	</bean>
+	
+	<!-- hibernate tx config-->
+	<bean id="mmpTxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" p:sessionFactory-ref="mmpSessionFactory" />
+
+	<tx:advice id="mmpTxAdvice" transaction-manager="mmpTxManager">
+		<tx:attributes>
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" isolation="READ_COMMITTED"/>
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" isolation="READ_COMMITTED"/>
+			<tx:method name="load*" propagation="SUPPORTS" read-only="true" isolation="READ_COMMITTED"/>
+			<tx:method name="search*" propagation="SUPPORTS" read-only="true" isolation="READ_COMMITTED"/>
+			<tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" />		
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+        <aop:pointcut id="mmpServicePointcut"
+            expression="execution(* com.hikvision.mmp.module.*.service.impl.*.*(..))" />
+        <aop:advisor advice-ref="mmpTxAdvice" pointcut-ref="mmpServicePointcut" />
+    </aop:config>
+    
+    <!-- 初始化接口 -->
+ 	<bean id="dataRegisterServiceImpl" class="com.hikvision.ivms.data.register.service.impl.DataRegisterServiceImpl" init-method="init"/>
+    
+	<import resource="classpath:com/hikvision/mmp/module/group/resource/spring.xml"/>
+	<import resource="classpath:com/hikvision/mmp/module/contact/resource/spring.xml"/>
+	<import resource="classpath:com/hikvision/mmp/common/spring-vms-common-resources-locale.xml"/>
+</beans>
