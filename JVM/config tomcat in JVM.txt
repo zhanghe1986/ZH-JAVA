@@ -1,0 +1,11 @@
+﻿场景: 当tomcat内存无限增长, 通过jvmvirtual工具排查堆内内存, 发现内存正常. 
+      在这个情况下, 可以确认堆外内存无限增加.
+
+解决方案: 通过jvm控制堆外内存大小, 当超过指定值时, 堆外内存可以自动清理.
+   a. D:\ivms8600\ivms_install\apps\tomcat-lite\bin 下initservice.bat编辑, 增加-XX:MaxDirectMemorySize=1024m;配置, 例如:
+"%EXECUTABLE%" //US//%SERVICE_NAME% --JvmOptions "-Xms%XMS%;-Xmx%XMX%;-XX:PermSize=%PREM_SIZE%;-XX:MaxDirectMemorySize=1024m;-XX:MaxPermSize=%MAX_PERM_SIZE%;-verbose:gc -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -Xloggc:%CATALINA_BASE%/logs/tomcat_gc.log;-Dcatalina.base=%CATALINA_BASE%;-Dcatalina.home=%CATALINA_HOME%;-Djava.endorsed.dirs=%CATALINA_HOME%\endorsed;-Dextend.library.path=%EXTEND_LIBRARY_PATH%" --StartMode jvm --StopMode jvm
+
+  b. 配置完成后, 在cmd命令行进入D:\ivms8600\ivms_install\apps\tomcat-lite\bin目录, 执行tomcat服务卸载和安装, 目的是能够正确修改jvm参数.
+   首先执行卸载tomcat服务命令: initservice.bat remove ivmsTomcat postgresql
+   命令中的ivmsTomcat是任务管理器服务管理的tomcat服务名称,必须一样, postgresql服务是tomcat服务所依赖的服务. 如果tomcat服务有依赖服务(直接依赖,不是间接依赖), 必须写上; 如果没有, 则不需要写. 命令执行后, tomcat服务将被关闭卸载, 在任务管理器上也将看不到tomcat服务.
+   其次执行命令加载tomcat服务: initservice.bat install ivmsTomcat postgresql.  命令执行后, tomcat服务被重启安装, 且新配置的jvm参数也生效(可以在cmd-regedit查询, 也可以在jvmvirtual工具查看参数)
