@@ -28,59 +28,59 @@ $mkdir testgit
 9. Create a file
 $touch readme.txt
 
-10¡¢Display different content between current direct and local warehouse
+10ã€Display different content between current direct and local warehouse
 $git diff
 
-11. ²é¿´ÒÑÔÝ´æµÄÎÄ¼þºÍÉÏ´ÎÌá½»Ê±µÄ¿ìÕÕÖ®¼äµÄ²îÒì
+11. æŸ¥çœ‹å·²æš‚å­˜çš„æ–‡ä»¶å’Œä¸Šæ¬¡æäº¤æ—¶çš„å¿«ç…§ä¹‹é—´çš„å·®å¼‚
 $git diff --cached
 $git diff --staged
 
 12. Display whole directs and files of current direct in local warehouse
 $git ls-files
 
-13¡¢´Ó¹¤×÷Ä¿Â¼ÖÐÉ¾³ýÎÄ¼þ²¢ÒÆ³öÔÝ´æÇø£¬Èç¹ûÄ¿±êÎÄ¼þÒÑÐÞ¸Ä²¢ÒÑ¾­ÔÝ´æ£¬Ðè¼Ó-f²ÎÊý
+13ã€ä»Žå·¥ä½œç›®å½•ä¸­åˆ é™¤æ–‡ä»¶å¹¶ç§»å‡ºæš‚å­˜åŒºï¼Œå¦‚æžœç›®æ ‡æ–‡ä»¶å·²ä¿®æ”¹å¹¶å·²ç»æš‚å­˜ï¼Œéœ€åŠ -få‚æ•°
 $git rm -f README
 
-14¡¢½ö´Ó¸ú×ÙÇåµ¥ÖÐÉ¾³ýÎÄ¼þ
+14ã€ä»…ä»Žè·Ÿè¸ªæ¸…å•ä¸­åˆ é™¤æ–‡ä»¶
 $git rm --cached readme.txt
 
-15¡¢µÝ¹éÉ¾³ýµ±Ç°Ä¿Â¼¼°Æä×ÓÄ¿Â¼ÖÐËùÓÐ~½áÎ²µÄÎÄ¼þ
+15ã€é€’å½’åˆ é™¤å½“å‰ç›®å½•åŠå…¶å­ç›®å½•ä¸­æ‰€æœ‰~ç»“å°¾çš„æ–‡ä»¶
 $git rm \*~
 
-16¡¢ÖØÃüÃûÎÄ¼þ²¢ÔÝ´æ
+16ã€é‡å‘½åæ–‡ä»¶å¹¶æš‚å­˜
 $git mv file_from file_to
 
-17¡¢²é¿´Ìá½»ÀúÊ·
+17ã€æŸ¥çœ‹æäº¤åŽ†å²
 $git log
 $git reflog
 
-18¡¢git log ²ÎÊýº¬Òå
--p : Õ¹¿ªÏÔÊ¾Ã¿´ÎÌá½»µÄÄÚÈÝ²îÒì
--2 : ½öÏÔÊ¾×î½üµÄÁ½´Î¸üÐÂ
---word-diff : »ñÈ¡µ¥´Ê²ãÃæÉÏµÄ¶Ô±È£¬ÔÚÊé¼®¡¢ÂÛÎÄÎÄ¼þ½øÐÐ¶Ô±ÈÊ±·Ç³£ÓÐÓÃ
---stat : ½öÏÔÊ¾¼òÒªµÄÔö¸ÄÐÐÊýÍ³¼Æ
---pretty : Ö¸¶¨¸ñÊ½Õ¹Ê¾Ìá½»ÀúÊ·, ÀýÈç£º--pretty=oneline, --pretty=short, --pretty=full, --pretty=fuller, --pretty=format:"%h - %an, %ar : %s"
---since, --after : ½öÏÔÊ¾Ö¸¶¨Ê±¼äÖ®ºóµÄÌá½»
---until, --before : ½öÏÔÊ¾Ö¸¶¨Ê±¼äÖ®Ç°µÄÌá½»
---author : ½öÏÔÊ¾Ö¸¶¨×÷ÕßÏà¹ØµÄÌá½»
---committer : ½öÏÔÊ¾Ö¸¶¨Ìá½»ÕßÏà¹ØµÄÌá½»
+18ã€git log å‚æ•°å«ä¹‰
+-p : å±•å¼€æ˜¾ç¤ºæ¯æ¬¡æäº¤çš„å†…å®¹å·®å¼‚
+-2 : ä»…æ˜¾ç¤ºæœ€è¿‘çš„ä¸¤æ¬¡æ›´æ–°
+--word-diff : èŽ·å–å•è¯å±‚é¢ä¸Šçš„å¯¹æ¯”ï¼Œåœ¨ä¹¦ç±ã€è®ºæ–‡æ–‡ä»¶è¿›è¡Œå¯¹æ¯”æ—¶éžå¸¸æœ‰ç”¨
+--stat : ä»…æ˜¾ç¤ºç®€è¦çš„å¢žæ”¹è¡Œæ•°ç»Ÿè®¡
+--pretty : æŒ‡å®šæ ¼å¼å±•ç¤ºæäº¤åŽ†å², ä¾‹å¦‚ï¼š--pretty=oneline, --pretty=short, --pretty=full, --pretty=fuller, --pretty=format:"%h - %an, %ar : %s"
+--since, --after : ä»…æ˜¾ç¤ºæŒ‡å®šæ—¶é—´ä¹‹åŽçš„æäº¤
+--until, --before : ä»…æ˜¾ç¤ºæŒ‡å®šæ—¶é—´ä¹‹å‰çš„æäº¤
+--author : ä»…æ˜¾ç¤ºæŒ‡å®šä½œè€…ç›¸å…³çš„æäº¤
+--committer : ä»…æ˜¾ç¤ºæŒ‡å®šæäº¤è€…ç›¸å…³çš„æäº¤
 
-19¡¢Í¼ÐÎ»¯½çÃæ²é¿´Ìá½»ÀúÊ·
+19ã€å›¾å½¢åŒ–ç•Œé¢æŸ¥çœ‹æäº¤åŽ†å²
 gitk
 
-20¡¢Ê¹ÓÃµ±Ç°ÔÝ´æÇøÓò¸²¸Ç×îºóÒ»´ÎÌá½»
+20ã€ä½¿ç”¨å½“å‰æš‚å­˜åŒºåŸŸè¦†ç›–æœ€åŽä¸€æ¬¡æäº¤
 git commit --amend
 
-21¡¢È¡ÏûÒÑ¾­ÔÝ´æµÄÎÄ¼þ
+21ã€å–æ¶ˆå·²ç»æš‚å­˜çš„æ–‡ä»¶
 git reset HEAD benchmarks.rb
 
-22¡¢³·Ïû¹¤×÷ÇøµÄÐÞ¸Ä
+22ã€æ’¤æ¶ˆå·¥ä½œåŒºçš„ä¿®æ”¹
 git checkout -- benchmarks.rb
 
-23¡¢»ØÍËµ½ÉÏÒ»¸ö°æ±¾
+23ã€å›žé€€åˆ°ä¸Šä¸€ä¸ªç‰ˆæœ¬
 git reset --hard HEAD^
 
-24¡¢»ØÍËµ½Ä³Ò»°æ±¾
+24ã€å›žé€€åˆ°æŸä¸€ç‰ˆæœ¬
 git reset --hard 8564333
 
 
@@ -97,6 +97,7 @@ $git push
 2. Check out specific direct and file into local repository and work direct, then add/modify/delete files
 $mkdir My-GitHub
 $cd My-GitHub
+$git init
 $git remote add -f origin git@github.com:"zhanghe1986"/"My-GitHub"
 $git config core.sparsecheckout true
 $echo "libs" >> .git/info/sparse-checkout
