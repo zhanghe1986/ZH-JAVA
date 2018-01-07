@@ -1,0 +1,962 @@
+package com.hikvision.cms.cache.manager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
+import com.hikvision.cms.cache.core.tools.KeyUtil;
+import com.hikvision.cms.cache.manager.serialize.ObjectTranscoder;
+import com.ivms6.core.util.CollectionUtils;
+import com.ivms6.core.util.NumberUtils;
+import com.ivms6.core.util.StringUtils;
+import com.ivms6.core.util.cm.ConfigManager;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.JedisSentinelPool;
+
+/**
+ * 操作Redis缓存的接口实现类
+ */
+@SuppressWarnings("unchecked")
+public class RedisStore implements IDataStoreForCollection {
+	private Logger log = LoggerFactory.getLogger(RedisStore.class);
+	JedisPool jedisPool;
+	JedisSentinelPool jedisSentinelPool;
+	boolean cluster=false;
+	static int DEFAULT_PORT = 6379;
+
+	public RedisStore() {
+		String thirdpart = ConfigManager.getConfiguration("cache-store","cache.thirdpart");
+		if("true".equals(thirdpart)){
+			String server = ConfigManager.getConfiguration("cache-connect",
+					"cache.cluster.0.server");
+			server = server.trim().replaceAll(" +", " ");
+			GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+			config.setMaxTotal(NumberUtils.toInt(ConfigManager.getConfiguration(
+					"cache-connect", "cache.cluster.0.connection-pool-size"), 10));
+			config.setMinIdle(NumberUtils.toInt(ConfigManager.getConfiguration(
+					"cache-connect", "cache.cluster.0.connection-min-idle"), 2));
+			config.setMaxIdle(NumberUtils.toInt(ConfigManager.getConfiguration(
+					"cache-connect", "cache.cluster.0.connection-max-idle"), 5));
+			String clusterType = ConfigManager.getConfiguration("cache-connect", "cache.deploy.default.cluster");
+			if(clusterType !=null && clusterType.equals("1")){
+				cluster = true;
+				String masterName = ConfigManager.getConfiguration("cache-connect", "cache.cluster.master.name");
+				if(log.isDebugEnabled()){
+					if(masterName == null){
+						log.error("redis cluster masterName null");
+					}
+				}
+				Set<String> sentinels = new HashSet<String>();
+				String [] IpAndPort = server.split(" ");
+				for(String info: IpAndPort){
+					sentinels.add(info);
+				}
+				jedisSentinelPool = new JedisSentinelPool(masterName, sentinels , config, 4000,ConfigManager.getConfiguration(
+						"cache-connect", "cache.cluster.0.auth"));
+			}else {
+				String ip = server.split(":")[0];
+				int port = NumberUtils.toInt(server.split(":")[1], DEFAULT_PORT);
+				
+				jedisPool = new JedisPool(config, ip, port, 4000, ConfigManager.getConfiguration(
+						"cache-connect", "cache.cluster.0.auth"));
+			}
+		}
+	}
+
+	private Jedis getJedis() {
+		
+		if(cluster){
+			return jedisSentinelPool.getResource();
+		}
+		return jedisPool.getResource();
+	}
+
+	private void returnJedis(Jedis jedis) {
+		if (jedis != null)
+			jedis.close();
+	}
+
+	private void returnBrokenJedis(Jedis jedis) {
+		if(jedis != null){
+			jedis.close();
+		}
+	}
+
+	@Override
+	public boolean set(String key, String value) throws DataLoadException {
+		Jedis jedis = null;
+		if(value == null){
+			log.error("the key:"+key+" value is"+value);
+			return false;
+		}
+		try {
+			jedis = getJedis();
+			jedis.set(KeyUtil.getKeyPre() + key, value);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean set(String key, String value, DATA_TYPE type)
+			throws DataLoadException {
+		return set(key, value);
+	}
+
+	@Override
+	public boolean set(String key, String value, long exp)
+			throws DataLoadException {
+		if(value == null){
+			log.error("the key:"+key+" value is"+value);
+			return false;
+		}
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			jedis.setex(KeyUtil.getKeyPre() +key, (int) (exp / 1000), value);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean set(String key, String value, long exp, DATA_TYPE type)
+			throws DataLoadException {
+		return set(key, value, exp);
+	}
+
+	@Override
+	public String get(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.get(KeyUtil.getKeyPre() +key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+
+	}
+
+	@Override
+	public String get(String key, DATA_TYPE type) throws DataLoadException {
+		return get(key);
+	}
+
+	@Override
+	public boolean remove(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			jedis.del(KeyUtil.getKeyPre() +key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean remove(String key, DATA_TYPE type) throws DataLoadException {
+		return remove(key);
+	}
+
+	@Override
+	public boolean setObject(String key, Object value) throws DataLoadException {
+		Jedis jedis = null;
+		if(value == null){
+			log.error("the key:"+key+" value is"+value);
+			return false;
+		}
+		try {
+			jedis = getJedis();
+			key = KeyUtil.getKeyPre() +key;
+			return jedis.set(key.getBytes(), ObjectTranscoder.serialize(value)) == "OK";
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public boolean setObject(String key, Object value, long exp)
+			throws DataLoadException {
+		Jedis jedis = null;
+		if(value == null){
+			log.error("the key:"+key+" value is"+value);
+			return false;
+		}
+		try {
+			jedis = getJedis();
+			key = KeyUtil.getKeyPre() +key;
+			return jedis.setex(key.getBytes(),ms2second(exp),ObjectTranscoder.serialize(value)) != "OK";
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public boolean setObject(String key, Object value, DATA_TYPE type)
+			throws DataLoadException {
+		return setObject(key, value);
+	}
+
+	@Override
+	public boolean setObject(String key, Object value, long exp, DATA_TYPE type)
+			throws DataLoadException {
+		return setObject(key, value, exp);
+	}
+
+	@Override
+	public Object getObject(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			key = KeyUtil.getKeyPre() +key;
+			byte[] in = jedis.get(key.getBytes());  
+			Object o = ObjectTranscoder.deserialize(in);  
+			return o;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public Object getObject(String key, DATA_TYPE type)
+			throws DataLoadException {
+		return getObject(key);
+	}
+	
+	@Override
+	public Boolean exsit(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.exists(KeyUtil.getKeyPre() +key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public void rename(String key, String newKey) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			jedis.rename(KeyUtil.getKeyPre() +key, newKey);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public Set<String> keys(String pattern) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.keys(pattern);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public Long ttl(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.ttl(KeyUtil.getKeyPre() +key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public void setObjectForGeneric(String key, Object value)
+			throws DataLoadException {
+		if (value instanceof CharSequence) {
+			set(key, value.toString());
+		} else {
+			set(key, JSON.toJSONString(value));
+		}
+	}
+	
+	@Override
+	public void setObjectForGeneric(String key, Object value, long exp)
+			throws DataLoadException {
+		setObject(key, value);
+	}
+
+	@Override
+	public <T> T getObjectForGeneric(String key, Class<T> clazz) throws DataLoadException {
+		String jsonstr = get(key);
+		if (StringUtils.isEmpty(jsonstr)) {
+			return null;
+		} else {
+			return (T) JSON.parseObject(jsonstr, clazz);
+		}
+	}
+
+	@Override
+	public <T> List<T> getList(String key, Class<T> clazz) throws DataLoadException {
+		String jsonstr = get(key);
+		if (StringUtils.isEmpty(jsonstr)) {
+			return Collections.emptyList();
+		} else {
+			return (List<T>) JSON.parseArray(jsonstr, clazz);
+		}
+	}
+
+	@Override
+	public <T> Set<T> getSet(String key, Class<T> clazz)
+			throws DataLoadException {
+		List<T> list = getList(key, clazz);
+		if (CollectionUtils.isEmpty(list)) {
+			return Collections.emptySet();
+		}
+		Set<T> set = new HashSet<T>();
+		set.addAll(list);
+		return set;
+	}
+
+	@Override
+	public <T> void rpush(String key, T... values)
+			throws DataLoadException {
+		if (values == null || values.length == 0) {
+			return;
+		}
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			for (T t : values) {
+				if (t instanceof CharSequence) {
+					jedis.rpush(key, (String[])values);
+					break;
+				}
+				jedis.rpush(key, JSON.toJSONString(t));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public <T> void lpush(String key, T... values)
+			throws DataLoadException {
+		if (values == null || values.length == 0) {
+			return;
+		}
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			for (T t : values) {
+				if (t instanceof CharSequence) {
+					jedis.lpush(key, (String[])values);
+					break;
+				}
+				jedis.lpush(key, JSON.toJSONString(t));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public Long llen(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.llen(key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public void lset(String key, long index, Object value)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (value instanceof CharSequence) {
+				jedis.lset(key, index, (String)value);
+			} else {
+				jedis.lset(key, index, JSON.toJSONString(value));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public <T> T lindex(String key, Class<T> clazz, long index)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (clazz == String.class) {
+				return (T) jedis.lindex(key, index);
+			} else {
+				String str = jedis.lindex(key, index);
+				return JSON.parseObject(str, clazz);
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public void ltrim(String key, long start, long end)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			jedis.ltrim(key, start, end);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public <T> T lpop(String key, Class<T> clazz)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (clazz == String.class) {
+				return (T) jedis.lpop(key);
+			} else {
+				String str = jedis.lpop(key);
+				return JSON.parseObject(str, clazz);
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public <T> T rpop(String key, Class<T> clazz)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (clazz == String.class) {
+				return (T) jedis.rpop(key);
+			} else {
+				String str = jedis.rpop(key);
+				return JSON.parseObject(str, clazz);
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> List<T> lrange(String key, Class<T> clazz, int start, int end)
+			throws DataLoadException {
+		List<String> list = null;
+		List<T> result = null;
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			list = jedis.lrange(key, start, end);
+			if (CollectionUtils.isNotEmpty(list)) {
+				if (clazz == String.class) {
+					return (List<T>) list;
+				} else {
+					result = new ArrayList<T>();
+					for (String str : list) {
+						result.add(JSON.parseObject(str, clazz));
+					}
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> void sadd(String key, T... values) throws DataLoadException {
+		if (values == null || values.length == 0) {
+			return;
+		}
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			for (T t : values) {
+				if (t instanceof CharSequence) {
+					jedis.sadd(key, (String[])values);
+					break;
+				}
+				jedis.sadd(key, JSON.toJSONString(t));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> void srem(String key, T value) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (value instanceof CharSequence) {
+				jedis.srem(key, (String)value);
+			} else {
+				jedis.srem(key, JSON.toJSONString(value));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Boolean sismember(String key, T value) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (value instanceof CharSequence) {
+				return jedis.sismember(key, (String)value);
+			} else {
+				return jedis.sismember(key, JSON.toJSONString(value));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Long scard(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.scard(key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> T spop(String key, Class<T> clazz) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			String str = jedis.spop(key);
+			if (clazz == String.class) {
+				return (T) str;
+			} else {
+				return (T) JSON.parseObject(str, clazz);
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Set<T> smembers(String key, Class<T> clazz)
+			throws DataLoadException {
+		Set<String> set = null;
+		Set<T> result = null;
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			set = jedis.smembers(key);
+			if (CollectionUtils.isNotEmpty(set)) {
+				if (clazz == String.class) {
+					return (Set<T>) set;
+				} else {
+					result = new HashSet<T>();
+					for (String str : set) {
+						result.add(JSON.parseObject(str, clazz));
+					}
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Set<T> sinter(Class<T> clazz, String... keys)
+			throws DataLoadException {
+		Set<String> set = null;
+		Set<T> result = null;
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			set = jedis.sinter(keys);
+			if (CollectionUtils.isNotEmpty(set)) {
+				if (clazz == String.class) {
+					return (Set<T>) set;
+				} else {
+					result = new HashSet<T>();
+					for (String str : set) {
+						result.add(JSON.parseObject(str, clazz));
+					}
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Set<T> sunion(Class<T> clazz, String... keys)
+			throws DataLoadException {
+		Set<String> set = null;
+		Set<T> result = null;
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			set = jedis.sunion(keys);
+			if (CollectionUtils.isNotEmpty(set)) {
+				if (clazz == String.class) {
+					return (Set<T>) set;
+				} else {
+					result = new HashSet<T>();
+					for (String str : set) {
+						result.add(JSON.parseObject(str, clazz));
+					}
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Set<T> sdiff(Class<T> clazz, String... keys)
+			throws DataLoadException {
+		Set<String> set = null;
+		Set<T> result = null;
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			set = jedis.sdiff(keys);
+			if (CollectionUtils.isNotEmpty(set)) {
+				if (clazz == String.class) {
+					return (Set<T>) set;
+				} else {
+					result = new HashSet<T>();
+					for (String str : set) {
+						result.add(JSON.parseObject(str, clazz));
+					}
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public <T> void hset(String key, String field, T value)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			if (value instanceof CharSequence) {
+				jedis.hset(key, field, (String) value);
+			} else {
+				jedis.hset(key, field, JSON.toJSONString(value));
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> void hmset(String key, Map<String, T> map)
+			throws DataLoadException {
+		if (map == null || map.size() == 0) {
+			return;
+		}
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			Map<String, String> jsonMap = null;
+			for (Map.Entry<String, T> entry : map.entrySet()) {
+				T value = entry.getValue();
+				if (value instanceof CharSequence) {
+					jedis.hmset(key, (Map<String, String>)map);
+					break;
+				}
+				if (jsonMap == null) {
+					jsonMap = new HashMap<String, String>();
+				}
+				jsonMap.put(entry.getKey(), JSON.toJSONString(value));
+			}
+			if (jsonMap != null) {
+				jedis.hmset(key, jsonMap);
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+	
+	@Override
+	public <T> T hget(String key, Class<T> clazz, String field)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			String value = jedis.hget(key, field);
+			if (value == null) {
+				return null;
+			}
+			if (clazz == String.class) {
+				return (T) value;
+			} else {
+				return JSON.parseObject(value, clazz);
+			}
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> List<T> hmget(String key, Class<T> clazz, String... fields)
+			throws DataLoadException {
+		if (fields == null || fields.length == 0) {
+			return Collections.emptyList();
+		}
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			List<String> list = jedis.hmget(key, fields);
+			if (CollectionUtils.isEmpty(list)) {
+				return Collections.emptyList();
+			}
+			if (clazz == String.class) {
+				return (List<T>) list;
+			}
+			List<T> result = new ArrayList<T>();
+			for (String str : list) {
+				result.add(JSON.parseObject(str, clazz));
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public Long hlen(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.hlen(key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public Set<String> hkeys(String key) throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			return jedis.hkeys(key);
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> List<T> hvals(String key, Class<T> clazz)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			List<String> list =  jedis.hvals(key);
+			if (CollectionUtils.isEmpty(list)) {
+				return Collections.emptyList();
+			}
+			if (clazz == String.class) {
+				return (List<T>) list;
+			}
+			List<T> result = new ArrayList<T>();
+			for (String str : list) {
+				result.add(JSON.parseObject(str, clazz));
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	@Override
+	public <T> Map<String, T> hgetAll(String key, Class<T> clazz)
+			throws DataLoadException {
+		Jedis jedis = null;
+		try {
+			jedis = getJedis();
+			Map<String, String> map =  jedis.hgetAll(key);
+			if (CollectionUtils.isEmpty(map)) {
+				return Collections.emptyMap();
+			}
+			if (clazz == String.class) {
+				return (Map<String, T>) map;
+			}
+			Map<String, T> result = new HashMap<String, T>();
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				result.put(entry.getKey(), JSON.parseObject(key, clazz));
+			}
+			return result;
+		} catch (Exception e) {
+			returnBrokenJedis(jedis);
+			throw new DataLoadException(e);
+		} finally {
+			returnJedis(jedis);
+		}
+	}
+
+	public void subscribe(JedisPubSub jedisPubSub ,String...channels){
+		Jedis jedis = getJedis();
+		jedis.subscribe(jedisPubSub, channels);
+		jedis.close();
+	}
+	
+	public void publish(String channel, String message){
+		Jedis jedis = getJedis();
+		jedis.publish(channel, message);
+		jedis.close();
+	}
+	
+	public void psubscribe(JedisPubSub jedisPubSub ,final String...patterns){
+		Jedis jedis = getJedis();
+		jedis.psubscribe(jedisPubSub, patterns);
+		jedis.close();
+	}
+	
+	/**
+	 * 毫秒转换为秒
+     * @param expiry
+     * @return
+     */
+    private int ms2second(long expiry) {
+	    return (int)((expiry % 1000) > 0 ? (expiry / 1000 + 1) : (expiry / 1000+1));
+    }
+}

@@ -1,0 +1,219 @@
+package com.hikvision.cms.cache.manager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
+import com.hikvision.cms.cache.core.memory.SimpleMemoryCache;
+import com.hikvision.cms.cache.core.tools.KeyUtil;
+
+/**
+ * 将基本的配置放在内存中,不支持集群环境
+ * <p>
+ * 该实现有内存限制，大数据量的数据不适合放入其中。
+ *
+ * TODO:
+ * Q1：暂时不支持过期，接下去会开发支持过期的方式。 * 
+ * Q2:这里还要考虑缓存数据最大值的情况，如果超出最大值，通过一定策略来进行存放，fifo，lru等....使用lru实现
+ * </p>
+ * @version V1.0
+ */
+public class MemoryStore implements IDataStore {
+	private Logger log = LoggerFactory.getLogger(MemoryStore.class);
+	private static SimpleMemoryCache<String,TimeObject> dataStore = new SimpleMemoryCache<String,TimeObject>(10000);
+	private static final long NEVER_EXPIRE = 30 * 24 * 60* 60 * 1000L;
+	private static long checkTime = 0;
+	private static final long CHECK_PERIOD = 1000 * 30;
+
+	private boolean isNeedCheck(){
+		long now = System.currentTimeMillis();
+		if(now - checkTime > CHECK_PERIOD){
+			log.info("start clear expire data.");
+			ExpireDataCleaner cleaner = new ExpireDataCleaner();
+			cleaner.start();
+			checkTime = now;
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+    public String get(String key) throws DataLoadException {
+		isNeedCheck();
+		
+	    TimeObject value = dataStore.get(KeyUtil.getKeyPre()+key);
+		if(value == null || value.isExpire()){
+			return null;
+		}
+		return String.valueOf(value.getData());
+    }
+
+	@Override
+    public boolean set(String key, String value) throws DataLoadException {
+		 setObject(key, value);
+	     return true;
+    }
+
+	@Override
+    public boolean set(String key, String value, long exp) throws DataLoadException {
+		setObject(key, value, exp);
+	     return true;
+    }
+
+	@Override
+    public boolean remove(String key){
+	    dataStore.remove(KeyUtil.getKeyPre()+key);
+	    return true;
+    }
+
+	@Override
+    public String get(String key, DATA_TYPE type) throws DataLoadException {
+	    return get(key);
+    }
+
+	@Override
+    public boolean remove(String key, DATA_TYPE type) throws DataLoadException {
+	    return remove(key);
+    }
+
+	@Override
+    public boolean set(String key, String value, DATA_TYPE type) throws DataLoadException {
+	    return set(key,value);
+    }
+
+	@Override
+    public boolean set(String key, String value, long exp, DATA_TYPE type) throws DataLoadException {
+	    return set(key,value,exp);
+    }
+
+	@Override
+    public Object getObject(String key) throws DataLoadException {
+		isNeedCheck();
+		
+		TimeObject value = dataStore.get(KeyUtil.getKeyPre()+key);
+		if(value == null || value.isExpire()){
+			return null;
+		}
+		return value.getData();
+    }
+	
+	@Override
+    public boolean setObject(String key, Object value) throws DataLoadException {
+		TimeObject data = new TimeObject(value, NEVER_EXPIRE);
+		long now = System.currentTimeMillis();
+		data.setUpdateTime(now);
+		dataStore.put(KeyUtil.getKeyPre()+key, data);
+	    return true;
+    }
+
+	@Override
+    public boolean setObject(String key, Object value, long exp) throws DataLoadException {
+		TimeObject data = new TimeObject(value, exp);
+		long now = System.currentTimeMillis();
+		data.setUpdateTime(now);
+		dataStore.put(KeyUtil.getKeyPre()+key, data);
+	    return true;
+    }
+
+	@Override
+    public boolean setObject(String key, Object value, long exp, DATA_TYPE type) throws DataLoadException {
+		TimeObject data = new TimeObject(value, exp);
+		long now = System.currentTimeMillis();
+		data.setUpdateTime(now);
+		dataStore.put(KeyUtil.getKeyPre()+key, data);
+	    return true;
+    }
+
+	@Override
+    public Object getObject(String key, DATA_TYPE type) throws DataLoadException {
+		return getObject(key);
+    }
+
+	@Override
+    public boolean setObject(String key, Object value, DATA_TYPE type) throws DataLoadException {
+	    return setObject(key, value);
+    }
+	
+	class TimeObject{
+		private long updateTime = -1;
+		private long expire = 0;
+		private Object data;
+		
+		public boolean isExpire(){
+			long now = System.currentTimeMillis();
+			if(now > expire + updateTime){
+				return true;
+			}
+			return false;
+		}
+		
+		public TimeObject(Object data){
+			this.data = data;
+		}
+		
+		public TimeObject(Object data,long expire){
+			this.data = data;
+			this.expire = expire;
+		}
+		
+        public long getUpdateTime() {
+        	return updateTime;
+        }
+		
+        public void setUpdateTime(long updateTime) {
+        	this.updateTime = updateTime;
+        }
+		
+        public long getExpire() {
+        	return expire;
+        }
+		
+        public void setExpire(long expire) {
+        	this.expire = expire;
+        }
+		
+        public Object getData() {
+        	return data;
+        }
+		
+        public void setData(Object data) {
+        	this.data = data;
+        }
+
+		@Override
+        public String toString() {
+	        return String.valueOf(data);
+        }
+		
+	}
+	
+	class ExpireDataCleaner extends Thread{
+		
+		private void putExpireData2List(Map<String,TimeObject> dataMap,List<String> container){
+			if(dataMap == null || dataMap.size() < 1){
+				return;
+			}
+			for(Map.Entry<String, TimeObject>entry : dataMap.entrySet()){
+				String key = entry.getKey();
+				TimeObject to = entry.getValue();
+				if(to.isExpire()){
+					if(log.isDebugEnabled()){
+						log.debug("the value [{}] is expired",new Object[]{key});
+					}
+					container.add(key);
+				}
+			}
+		}
+		
+		@Override
+        public void run() {//比较过期时间，进行处理
+			List<String> container = new ArrayList<String>();
+			Map<String,TimeObject> edenMap = dataStore.getEdenMap();
+			Map<String,TimeObject> longTermMap = dataStore.getLongTermMap();
+			putExpireData2List(edenMap,container);
+			putExpireData2List(longTermMap,container);
+			dataStore.remove(container);
+        }
+	}
+}

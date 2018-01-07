@@ -1,0 +1,399 @@
+package com.hikvision.cms.cache.manager;
+import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
+import com.ivms6.core.util.cm.ConfigManager;
+/**
+ * 数据管理的实现
+ * @version V1.0   
+ */
+public class DataManager {
+	private IDataStore memoryStore;
+	private IDataStore dbStore;
+	private IDataStore thirdPartyStore;
+	private String config = null;
+	public boolean isThirdStore(){
+		if(config == null){
+			config = ConfigManager.getConfiguration("cache-store", "cache.thirdpart");
+		}
+		if("true".equals(config)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	private IDataStore  getStore(boolean single){
+		if(isThirdStore()){
+			return thirdPartyStore;
+		}else if(single){
+			return memoryStore;
+		}else{
+			return dbStore;
+		}
+	}
+	
+	/**
+	 * 将数据存放入缓存中，默认数据类型为DATA_TYPE.TEMP 永不过期
+	 * @param key   键
+	 * @param value 值
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value) throws DataLoadException{
+		return getStore(true).set(key, value);
+	}
+	
+	/**
+	 * 将数据存放入缓存中 永不过期
+	 * @param key   键
+	 * @param value 值
+	 * @param type  存入数据的类型
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,DATA_TYPE type) throws DataLoadException{
+		return getStore(true).set(key, value, type);
+	}
+	
+	/**
+	 * 将数据存放入缓存中 ,并指定过期时间
+	 * @param key    键
+	 * @param value  值
+	 * @param exp    过期时间
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,long exp) throws DataLoadException{
+		return getStore(true).set(key, value, exp);
+	}
+	
+	/**
+	 * 将数据存放入缓存中 ,并指定过期时间和数据类型
+	  * @param key    键
+	 * @param value  值
+	 * @param exp    过期时间
+	 * @param type   数据类型
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,long exp,DATA_TYPE type) throws DataLoadException{
+		return getStore(true).set(key, value, exp, type);
+	}
+	
+	/**
+	 * 获取指定键的数据，数据类型默认为DATA_TYPE.TEMP
+	 * @param key  键
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public String get(String key) throws DataLoadException{
+		return getStore(true).get(key);
+	}
+	
+	/**
+	 * 获取指定键和数据类型的数据
+	 * @param key    键
+	 * @param type   数据类型
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public String get(String key,DATA_TYPE type) throws DataLoadException{
+		return getStore(true).get(key, type);
+	}
+	
+	/**
+	 * 删除指定键的数据，数据类型默认为DATA_TYPE.TEMP
+	 * @param key  键
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean remove(String key) throws DataLoadException{
+		return getStore(true).remove(key);
+	}
+	
+	/**
+	 * 删除指定键和数据类型的数据
+	 * @param key   键
+	 * @param type  值
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean remove(String key,DATA_TYPE type) throws DataLoadException{
+		return getStore(true).remove(key, type);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中，默认数据类型为DATA_TYPE.TEMP 永不过期<br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key     键
+	 * @param value   值
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value) throws DataLoadException{
+		return getStore(true).setObject(key, value);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中并指定过期时间，默认数据类型为DATA_TYPE.TEMP <br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key    键
+	 * @param value  值
+	 * @param exp    过期时间
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,long exp) throws DataLoadException{
+		return getStore(true).setObject(key, value, exp);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中并指定数据类型，数据永不过期 <br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key    键
+	 * @param value  值
+	 * @param type    数据类型
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,DATA_TYPE type) throws DataLoadException{
+		return getStore(true).setObject(key, value, type);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中并指定过期时间和数据类型 <br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key     键
+	 * @param value   值
+	 * @param exp     过期时间
+	 * @param type    数据类型
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,long exp, DATA_TYPE type) throws DataLoadException{
+		return getStore(true).setObject(key, value, exp, type);
+	}
+	
+	/**
+	 * 获取指定键和数据类型的对象， 返回的是保存的对象类型，使用的时候需要进行强制转换
+	 * @param key   键
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public Object getObject(String key) throws DataLoadException{
+		return getStore(true).getObject(key);
+	}
+	
+	/**
+	 * 获取指定键和数据类型的对象， 返回的是保存的对象类型，使用的时候需要进行强制转换
+	 * @param key    键
+	 * @param type   数据类型
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public Object getObject(String key,DATA_TYPE type) throws DataLoadException{
+		return getStore(true).getObject(key, type);
+	}
+	
+	/**
+	 * 将数据存放入缓存中，默认数据类型为DATA_TYPE.TEMP 永不过期
+	 * @param key   键
+	 * @param value 值
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,boolean single) throws DataLoadException{
+		return getStore(single).set(key, value);
+	}
+	
+	/**
+	 * 将数据存放入缓存中 永不过期
+	 * @param key   键
+	 * @param value 值
+	 * @param type  存入数据的类型
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).set(key, value, type);
+	}
+	
+	/**
+	 * 将数据存放入缓存中 ,并指定过期时间
+	 * @param key    键
+	 * @param value  值
+	 * @param exp    过期时间
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,long exp,boolean single) throws DataLoadException{
+		return getStore(single).set(key, value, exp);
+	}
+	
+	/**
+	 * 将数据存放入缓存中 ,并指定过期时间和数据类型
+	  * @param key    键
+	 * @param value  值
+	 * @param exp    过期时间
+	 * @param type   数据类型
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean set(String key,String value,long exp,DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).set(key, value, exp, type);
+	}
+	
+	/**
+	 * 获取指定键的数据，数据类型默认为DATA_TYPE.TEMP
+	 * @param key  键
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public String get(String key,boolean single) throws DataLoadException{
+		return getStore(single).get(key);
+	}
+	
+	/**
+	 * 获取指定键和数据类型的数据
+	 * @param key    键
+	 * @param type   数据类型
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public String get(String key,DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).get(key, type);
+	}
+	
+	
+	/**
+	 * 删除指定键的数据，数据类型默认为DATA_TYPE.TEMP
+	 * @param key  键
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean remove(String key,boolean single) throws DataLoadException{
+		return getStore(single).remove(key);
+	}
+	
+	/**
+	 * 删除指定键和数据类型的数据
+	 * @param key   键
+	 * @param type  值
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean remove(String key,DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).remove(key, type);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中，默认数据类型为DATA_TYPE.TEMP 永不过期<br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key     键
+	 * @param value   值
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,boolean single) throws DataLoadException{
+		return getStore(single).setObject(key, value);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中并指定过期时间，默认数据类型为DATA_TYPE.TEMP <br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key    键
+	 * @param value  值
+	 * @param exp    过期时间
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,long exp,boolean single) throws DataLoadException{
+		return getStore(single).setObject(key, value, exp);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中并指定数据类型，数据永不过期 <br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key    键
+	 * @param value  值
+	 * @param type    数据类型
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).setObject(key, value, type);
+	}
+	
+	/**
+	 * 将对象数据存放入缓存中并指定过期时间和数据类型 <br>
+	 * 对象序列化后的长度不能超过 1000000 Byte
+	 * @param key     键
+	 * @param value   值
+	 * @param exp     过期时间
+	 * @param type    数据类型
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public boolean setObject(String key,Object value,long exp, DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).setObject(key, value, exp, type);
+	}
+	
+	/**
+	 * 获取指定键和数据类型的对象， 返回的是保存的对象类型，使用的时候需要进行强制转换
+	 * @param key   键
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public Object getObject(String key,boolean single) throws DataLoadException{
+		return getStore(single).getObject(key);
+	}
+	
+	/**
+	 * 获取指定键和数据类型的对象， 返回的是保存的对象类型，使用的时候需要进行强制转换
+	 * @param key    键
+	 * @param type   数据类型
+	 * @param single 是否单个应用使用，如果要跨jvm多个应用使用个，则该值需要置为false
+	 * @return
+	 * @throws DataLoadException
+	 */
+	public Object getObject(String key,DATA_TYPE type,boolean single) throws DataLoadException{
+		return getStore(single).getObject(key, type);
+	}
+	
+	
+    public IDataStore getMemoryStore() {
+    	return memoryStore;
+    }
+
+    public void setMemoryStore(IDataStore memoryStore) {
+    	this.memoryStore = memoryStore;
+    }
+
+    public IDataStore getDbStore() {
+    	return dbStore;
+    }
+
+    public void setDbStore(IDataStore dbStore) {
+    	this.dbStore = dbStore;
+    }
+
+    public IDataStore getThirdPartyStore() {
+    	return thirdPartyStore;
+    }
+
+    public void setThirdPartyStore(IDataStore thirdPartyStore) {
+    	this.thirdPartyStore = thirdPartyStore;
+    }
+}
