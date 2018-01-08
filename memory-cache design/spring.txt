@@ -1,4 +1,4 @@
-<bean id="memoryStore" class="com.hikvision.cms.cache.manager.MemoryStore" autowire="byName" />
-	<bean id="dbStore" class="com.hikvision.cms.cache.manager.MemoryStore" autowire="byName" />
-	<bean id="thirdPartyStore" class="com.hikvision.cms.cache.manager.MemcacheStore" autowire="byName" />
-<bean id="thirdPartyStore" class="com.hikvision.cms.cache.manager.RedisStore" />
+<bean id="memoryStore" class="com.cms.cache.manager.MemoryStore" autowire="byName" />
+	<bean id="dbStore" class="com.cms.cache.manager.MemoryStore" autowire="byName" />
+	<bean id="thirdPartyStore" class="com.cms.cache.manager.MemcacheStore" autowire="byName" />
+<bean id="thirdPartyStore" class="com.cms.cache.manager.RedisStore" />
