@@ -1,9 +1,9 @@
-package com.hikvision.cms.cache.manager;
+package com.cms.cache.manager;
 
-import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
+import com.cms.cache.core.common.CacheConstants.DATA_TYPE;
 
 /**
- * Ê¹ÓÃ»º´æµÄ½Ó¿Ú
+ * ä½¿ç”¨ç¼“å­˜çš„æ¥å£
  * @version V1.0
  */
 public interface IDataStore {
@@ -13,57 +13,57 @@ public interface IDataStore {
 	final static String BIG_DATA_FLAG = "DATA_BLOCK_COUNT_";
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP ÓÀ²»¹ıÆÚ
-	 * @param key   ¼ü
-	 * @param value Öµ
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP æ°¸ä¸è¿‡æœŸ
+	 * @param key   é”®
+	 * @param value å€¼
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean set(String key,String value) throws DataLoadException;
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ÓÀ²»¹ıÆÚ
-	 * @param key   ¼ü
-	 * @param value Öµ
-	 * @param type  ´æÈëÊı¾İµÄÀàĞÍ
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ æ°¸ä¸è¿‡æœŸ
+	 * @param key   é”®
+	 * @param value å€¼
+	 * @param type  å­˜å…¥æ•°æ®çš„ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean set(String key,String value,DATA_TYPE type) throws DataLoadException;
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ,²¢Ö¸¶¨¹ıÆÚÊ±¼ä
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä(µ¥Î»ºÁÃë)
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ ,å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´(å•ä½æ¯«ç§’)
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean set(String key,String value,long exp) throws DataLoadException;
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ,²¢Ö¸¶¨¹ıÆÚÊ±¼äºÍÊı¾İÀàĞÍ
-	  * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä(µ¥Î»ºÁÃë)
-	 * @param type   Êı¾İÀàĞÍ
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ ,å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´å’Œæ•°æ®ç±»å‹
+	  * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´(å•ä½æ¯«ç§’)
+	 * @param type   æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean set(String key,String value,long exp,DATA_TYPE type) throws DataLoadException;
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üµÄÊı¾İ£¬Êı¾İÀàĞÍÄ¬ÈÏÎªDATA_TYPE.TEMP
-	 * @param key  ¼ü
+	 * è·å–æŒ‡å®šé”®çš„æ•°æ®ï¼Œæ•°æ®ç±»å‹é»˜è®¤ä¸ºDATA_TYPE.TEMP
+	 * @param key  é”®
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public String get(String key) throws DataLoadException;
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄÊı¾İ
-	 * @param key    ¼ü
-	 * @param type   Êı¾İÀàĞÍ
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„æ•°æ®
+	 * @param key    é”®
+	 * @param type   æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -71,69 +71,69 @@ public interface IDataStore {
 	
 	
 	/**
-	 * É¾³ıÖ¸¶¨¼üµÄÊı¾İ£¬Êı¾İÀàĞÍÄ¬ÈÏÎªDATA_TYPE.TEMP
-	 * @param key  ¼ü
+	 * åˆ é™¤æŒ‡å®šé”®çš„æ•°æ®ï¼Œæ•°æ®ç±»å‹é»˜è®¤ä¸ºDATA_TYPE.TEMP
+	 * @param key  é”®
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean remove(String key) throws DataLoadException;
 	
 	/**
-	 * É¾³ıÖ¸¶¨¼üºÍÊı¾İÀàĞÍµÄÊı¾İ
-	 * @param key   ¼ü
-	 * @param type  Öµ
+	 * åˆ é™¤æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„æ•°æ®
+	 * @param key   é”®
+	 * @param type  å€¼
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean remove(String key,DATA_TYPE type) throws DataLoadException;
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP ÓÀ²»¹ıÆÚ<br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key     ¼ü
-	 * @param value   Öµ
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP æ°¸ä¸è¿‡æœŸ<br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key     é”®
+	 * @param value   å€¼
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean setObject(String key,Object value) throws DataLoadException;
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨¹ıÆÚÊ±¼ä£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean setObject(String key,Object value,long exp) throws DataLoadException;
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨Êı¾İÀàĞÍ£¬Êı¾İÓÀ²»¹ıÆÚ <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param type    Êı¾İÀàĞÍ
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šæ•°æ®ç±»å‹ï¼Œæ•°æ®æ°¸ä¸è¿‡æœŸ <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param type    æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean setObject(String key,Object value,DATA_TYPE type) throws DataLoadException;
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨¹ıÆÚÊ±¼äºÍÊı¾İÀàĞÍ <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key     ¼ü
-	 * @param value   Öµ
-	 * @param exp     ¹ıÆÚÊ±¼ä
-	 * @param type    Êı¾İÀàĞÍ
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´å’Œæ•°æ®ç±»å‹ <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key     é”®
+	 * @param value   å€¼
+	 * @param exp     è¿‡æœŸæ—¶é—´
+	 * @param type    æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
 	public boolean setObject(String key,Object value,long exp, DATA_TYPE type) throws DataLoadException;
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄ¶ÔÏó£¬ ·µ»ØµÄÊÇ±£´æµÄ¶ÔÏóÀàĞÍ£¬Ê¹ÓÃµÄÊ±ºòĞèÒª½øĞĞÇ¿ÖÆ×ª»»
-	 * @param key   ¼ü
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„å¯¹è±¡ï¼Œ è¿”å›çš„æ˜¯ä¿å­˜çš„å¯¹è±¡ç±»å‹ï¼Œä½¿ç”¨çš„æ—¶å€™éœ€è¦è¿›è¡Œå¼ºåˆ¶è½¬æ¢
+	 * @param key   é”®
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -141,9 +141,9 @@ public interface IDataStore {
 	public Object getObject(String key) throws DataLoadException;
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄ¶ÔÏó£¬ ·µ»ØµÄÊÇ±£´æµÄ¶ÔÏóÀàĞÍ£¬Ê¹ÓÃµÄÊ±ºòĞèÒª½øĞĞÇ¿ÖÆ×ª»»
-	 * @param key    ¼ü
-	 * @param type   Êı¾İÀàĞÍ
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„å¯¹è±¡ï¼Œ è¿”å›çš„æ˜¯ä¿å­˜çš„å¯¹è±¡ç±»å‹ï¼Œä½¿ç”¨çš„æ—¶å€™éœ€è¦è¿›è¡Œå¼ºåˆ¶è½¬æ¢
+	 * @param key    é”®
+	 * @param type   æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
