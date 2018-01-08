@@ -1,19 +1,19 @@
-package com.hikvision.cms.cache.manager;
+package com.cms.cache.manager;
 import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
-import com.hikvision.cms.cache.core.exception.CacheConnectException;
-import com.hikvision.cms.cache.core.tools.CacheUtil;
-import com.hikvision.cms.cache.manager.serialize.XmlSerializer;
-import com.ivms6.core.util.StringUtils;
+import com.cms.cache.core.common.CacheConstants.DATA_TYPE;
+import com.cms.cache.core.exception.CacheConnectException;
+import com.cms.cache.core.tools.CacheUtil;
+import com.cms.cache.manager.serialize.XmlSerializer;
+import com.core.util.StringUtils;
 import com.thoughtworks.xstream.XStreamException;
 
 /**
- * Ê¹ÓÃmemcachedÀ´ÊµÏÖµÄ»º´æ¡£
+ * ä½¿ç”¨memcachedæ¥å®ç°çš„ç¼“å­˜ã€‚
  * <p>
- * ÆäÖĞÊı¾İÀàĞÍÎªDATA_TYPE.SESSIONµÄÊı¾İ»áÓĞ±¸·İÊı¾İ£¬ÆäËûÊı¾İÖ»´æÒ»·İ<br>
- * ÁíÍâ·µ»Ø¿ÕÎª¿Õ£¬Å×³öÒì³£ÎªÈ¥·şÎñÆ÷»ñÈ¡Êı¾İÒì³££¬ĞèÒªÇø±ğ¶Ô´ı<br>
+ * å…¶ä¸­æ•°æ®ç±»å‹ä¸ºDATA_TYPE.SESSIONçš„æ•°æ®ä¼šæœ‰å¤‡ä»½æ•°æ®ï¼Œå…¶ä»–æ•°æ®åªå­˜ä¸€ä»½<br>
+ * å¦å¤–è¿”å›ç©ºä¸ºç©ºï¼ŒæŠ›å‡ºå¼‚å¸¸ä¸ºå»æœåŠ¡å™¨è·å–æ•°æ®å¼‚å¸¸ï¼Œéœ€è¦åŒºåˆ«å¯¹å¾…<br>
  * </p>
  * @version V1.0
  */
@@ -31,7 +31,7 @@ public class MemcacheStore implements IDataStore {
         }
 	}
 	
-	//Èç¹û»º´æ²»ÄÜ¹»Á¬½ÓÉÏ£¬½«»º´æ´íÎó¼ÇÂ¼µ½Êı¾İ¿âÖĞ
+	//å¦‚æœç¼“å­˜ä¸èƒ½å¤Ÿè¿æ¥ä¸Šï¼Œå°†ç¼“å­˜é”™è¯¯è®°å½•åˆ°æ•°æ®åº“ä¸­
 	private void recordSystemLog(String key, String value, Throwable ce, String action) {
 		log.info("write system log for cache error.key:" + key + ",value:" + value);
     }
