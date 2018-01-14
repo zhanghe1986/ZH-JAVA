@@ -1,21 +1,21 @@
-package com.hikvision.cms.cache.manager;
+package com.cms.cache.manager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
-import com.hikvision.cms.cache.core.memory.SimpleMemoryCache;
-import com.hikvision.cms.cache.core.tools.KeyUtil;
+import com.cms.cache.core.common.CacheConstants.DATA_TYPE;
+import com.cms.cache.core.memory.SimpleMemoryCache;
+import com.cms.cache.core.tools.KeyUtil;
 
 /**
- * ½«»ù±¾µÄÅäÖÃ·ÅÔÚÄÚ´æÖĞ,²»Ö§³Ö¼¯Èº»·¾³
+ * å°†åŸºæœ¬çš„é…ç½®æ”¾åœ¨å†…å­˜ä¸­,ä¸æ”¯æŒé›†ç¾¤ç¯å¢ƒ
  * <p>
- * ¸ÃÊµÏÖÓĞÄÚ´æÏŞÖÆ£¬´óÊı¾İÁ¿µÄÊı¾İ²»ÊÊºÏ·ÅÈëÆäÖĞ¡£
+ * è¯¥å®ç°æœ‰å†…å­˜é™åˆ¶ï¼Œå¤§æ•°æ®é‡çš„æ•°æ®ä¸é€‚åˆæ”¾å…¥å…¶ä¸­ã€‚
  *
  * TODO:
- * Q1£ºÔİÊ±²»Ö§³Ö¹ıÆÚ£¬½ÓÏÂÈ¥»á¿ª·¢Ö§³Ö¹ıÆÚµÄ·½Ê½¡£ * 
- * Q2:ÕâÀï»¹Òª¿¼ÂÇ»º´æÊı¾İ×î´óÖµµÄÇé¿ö£¬Èç¹û³¬³ö×î´óÖµ£¬Í¨¹ıÒ»¶¨²ßÂÔÀ´½øĞĞ´æ·Å£¬fifo£¬lruµÈ....Ê¹ÓÃlruÊµÏÖ
+ * Q1ï¼šæš‚æ—¶ä¸æ”¯æŒè¿‡æœŸï¼Œæ¥ä¸‹å»ä¼šå¼€å‘æ”¯æŒè¿‡æœŸçš„æ–¹å¼ã€‚ * 
+ * Q2:è¿™é‡Œè¿˜è¦è€ƒè™‘ç¼“å­˜æ•°æ®æœ€å¤§å€¼çš„æƒ…å†µï¼Œå¦‚æœè¶…å‡ºæœ€å¤§å€¼ï¼Œé€šè¿‡ä¸€å®šç­–ç•¥æ¥è¿›è¡Œå­˜æ”¾ï¼Œfifoï¼Œlruç­‰....ä½¿ç”¨lruå®ç°
  * </p>
  * @version V1.0
  */
@@ -207,7 +207,7 @@ public class MemoryStore implements IDataStore {
 		}
 		
 		@Override
-        public void run() {//±È½Ï¹ıÆÚÊ±¼ä£¬½øĞĞ´¦Àí
+        public void run() {//æ¯”è¾ƒè¿‡æœŸæ—¶é—´ï¼Œè¿›è¡Œå¤„ç†
 			List<String> container = new ArrayList<String>();
 			Map<String,TimeObject> edenMap = dataStore.getEdenMap();
 			Map<String,TimeObject> longTermMap = dataStore.getLongTermMap();

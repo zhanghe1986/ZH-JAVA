@@ -1,8 +1,8 @@
-package com.hikvision.cms.cache.manager;
-import com.hikvision.cms.cache.core.common.CacheConstants.DATA_TYPE;
+package com.cms.cache.manager;
+import com.cms.cache.core.common.CacheConstants.DATA_TYPE;
 import com.ivms6.core.util.cm.ConfigManager;
 /**
- * Êı¾İ¹ÜÀíµÄÊµÏÖ
+ * æ•°æ®ç®¡ç†çš„å®ç°
  * @version V1.0   
  */
 public class DataManager {
@@ -32,9 +32,9 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP ÓÀ²»¹ıÆÚ
-	 * @param key   ¼ü
-	 * @param value Öµ
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP æ°¸ä¸è¿‡æœŸ
+	 * @param key   é”®
+	 * @param value å€¼
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -43,10 +43,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ÓÀ²»¹ıÆÚ
-	 * @param key   ¼ü
-	 * @param value Öµ
-	 * @param type  ´æÈëÊı¾İµÄÀàĞÍ
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ æ°¸ä¸è¿‡æœŸ
+	 * @param key   é”®
+	 * @param value å€¼
+	 * @param type  å­˜å…¥æ•°æ®çš„ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -55,10 +55,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ,²¢Ö¸¶¨¹ıÆÚÊ±¼ä
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ ,å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -67,11 +67,11 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ,²¢Ö¸¶¨¹ıÆÚÊ±¼äºÍÊı¾İÀàĞÍ
-	  * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
-	 * @param type   Êı¾İÀàĞÍ
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ ,å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´å’Œæ•°æ®ç±»å‹
+	  * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
+	 * @param type   æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -80,8 +80,8 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üµÄÊı¾İ£¬Êı¾İÀàĞÍÄ¬ÈÏÎªDATA_TYPE.TEMP
-	 * @param key  ¼ü
+	 * è·å–æŒ‡å®šé”®çš„æ•°æ®ï¼Œæ•°æ®ç±»å‹é»˜è®¤ä¸ºDATA_TYPE.TEMP
+	 * @param key  é”®
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -90,9 +90,9 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄÊı¾İ
-	 * @param key    ¼ü
-	 * @param type   Êı¾İÀàĞÍ
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„æ•°æ®
+	 * @param key    é”®
+	 * @param type   æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -101,8 +101,8 @@ public class DataManager {
 	}
 	
 	/**
-	 * É¾³ıÖ¸¶¨¼üµÄÊı¾İ£¬Êı¾İÀàĞÍÄ¬ÈÏÎªDATA_TYPE.TEMP
-	 * @param key  ¼ü
+	 * åˆ é™¤æŒ‡å®šé”®çš„æ•°æ®ï¼Œæ•°æ®ç±»å‹é»˜è®¤ä¸ºDATA_TYPE.TEMP
+	 * @param key  é”®
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -111,9 +111,9 @@ public class DataManager {
 	}
 	
 	/**
-	 * É¾³ıÖ¸¶¨¼üºÍÊı¾İÀàĞÍµÄÊı¾İ
-	 * @param key   ¼ü
-	 * @param type  Öµ
+	 * åˆ é™¤æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„æ•°æ®
+	 * @param key   é”®
+	 * @param type  å€¼
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -122,10 +122,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP ÓÀ²»¹ıÆÚ<br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key     ¼ü
-	 * @param value   Öµ
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP æ°¸ä¸è¿‡æœŸ<br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key     é”®
+	 * @param value   å€¼
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -134,11 +134,11 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨¹ıÆÚÊ±¼ä£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -147,11 +147,11 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨Êı¾İÀàĞÍ£¬Êı¾İÓÀ²»¹ıÆÚ <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param type    Êı¾İÀàĞÍ
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šæ•°æ®ç±»å‹ï¼Œæ•°æ®æ°¸ä¸è¿‡æœŸ <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param type    æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -160,12 +160,12 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨¹ıÆÚÊ±¼äºÍÊı¾İÀàĞÍ <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key     ¼ü
-	 * @param value   Öµ
-	 * @param exp     ¹ıÆÚÊ±¼ä
-	 * @param type    Êı¾İÀàĞÍ
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´å’Œæ•°æ®ç±»å‹ <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key     é”®
+	 * @param value   å€¼
+	 * @param exp     è¿‡æœŸæ—¶é—´
+	 * @param type    æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -174,8 +174,8 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄ¶ÔÏó£¬ ·µ»ØµÄÊÇ±£´æµÄ¶ÔÏóÀàĞÍ£¬Ê¹ÓÃµÄÊ±ºòĞèÒª½øĞĞÇ¿ÖÆ×ª»»
-	 * @param key   ¼ü
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„å¯¹è±¡ï¼Œ è¿”å›çš„æ˜¯ä¿å­˜çš„å¯¹è±¡ç±»å‹ï¼Œä½¿ç”¨çš„æ—¶å€™éœ€è¦è¿›è¡Œå¼ºåˆ¶è½¬æ¢
+	 * @param key   é”®
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -184,9 +184,9 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄ¶ÔÏó£¬ ·µ»ØµÄÊÇ±£´æµÄ¶ÔÏóÀàĞÍ£¬Ê¹ÓÃµÄÊ±ºòĞèÒª½øĞĞÇ¿ÖÆ×ª»»
-	 * @param key    ¼ü
-	 * @param type   Êı¾İÀàĞÍ
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„å¯¹è±¡ï¼Œ è¿”å›çš„æ˜¯ä¿å­˜çš„å¯¹è±¡ç±»å‹ï¼Œä½¿ç”¨çš„æ—¶å€™éœ€è¦è¿›è¡Œå¼ºåˆ¶è½¬æ¢
+	 * @param key    é”®
+	 * @param type   æ•°æ®ç±»å‹
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -195,10 +195,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP ÓÀ²»¹ıÆÚ
-	 * @param key   ¼ü
-	 * @param value Öµ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP æ°¸ä¸è¿‡æœŸ
+	 * @param key   é”®
+	 * @param value å€¼
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -207,11 +207,11 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ÓÀ²»¹ıÆÚ
-	 * @param key   ¼ü
-	 * @param value Öµ
-	 * @param type  ´æÈëÊı¾İµÄÀàĞÍ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ æ°¸ä¸è¿‡æœŸ
+	 * @param key   é”®
+	 * @param value å€¼
+	 * @param type  å­˜å…¥æ•°æ®çš„ç±»å‹
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -220,11 +220,11 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ,²¢Ö¸¶¨¹ıÆÚÊ±¼ä
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ ,å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -233,12 +233,12 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«Êı¾İ´æ·ÅÈë»º´æÖĞ ,²¢Ö¸¶¨¹ıÆÚÊ±¼äºÍÊı¾İÀàĞÍ
-	  * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
-	 * @param type   Êı¾İÀàĞÍ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ ,å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´å’Œæ•°æ®ç±»å‹
+	  * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
+	 * @param type   æ•°æ®ç±»å‹
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -247,9 +247,9 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üµÄÊı¾İ£¬Êı¾İÀàĞÍÄ¬ÈÏÎªDATA_TYPE.TEMP
-	 * @param key  ¼ü
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * è·å–æŒ‡å®šé”®çš„æ•°æ®ï¼Œæ•°æ®ç±»å‹é»˜è®¤ä¸ºDATA_TYPE.TEMP
+	 * @param key  é”®
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -258,10 +258,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄÊı¾İ
-	 * @param key    ¼ü
-	 * @param type   Êı¾İÀàĞÍ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„æ•°æ®
+	 * @param key    é”®
+	 * @param type   æ•°æ®ç±»å‹
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -271,9 +271,9 @@ public class DataManager {
 	
 	
 	/**
-	 * É¾³ıÖ¸¶¨¼üµÄÊı¾İ£¬Êı¾İÀàĞÍÄ¬ÈÏÎªDATA_TYPE.TEMP
-	 * @param key  ¼ü
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * åˆ é™¤æŒ‡å®šé”®çš„æ•°æ®ï¼Œæ•°æ®ç±»å‹é»˜è®¤ä¸ºDATA_TYPE.TEMP
+	 * @param key  é”®
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -282,10 +282,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * É¾³ıÖ¸¶¨¼üºÍÊı¾İÀàĞÍµÄÊı¾İ
-	 * @param key   ¼ü
-	 * @param type  Öµ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * åˆ é™¤æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„æ•°æ®
+	 * @param key   é”®
+	 * @param type  å€¼
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -294,11 +294,11 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP ÓÀ²»¹ıÆÚ<br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key     ¼ü
-	 * @param value   Öµ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP æ°¸ä¸è¿‡æœŸ<br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key     é”®
+	 * @param value   å€¼
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -307,12 +307,12 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨¹ıÆÚÊ±¼ä£¬Ä¬ÈÏÊı¾İÀàĞÍÎªDATA_TYPE.TEMP <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param exp    ¹ıÆÚÊ±¼ä
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´ï¼Œé»˜è®¤æ•°æ®ç±»å‹ä¸ºDATA_TYPE.TEMP <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param exp    è¿‡æœŸæ—¶é—´
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -321,12 +321,12 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨Êı¾İÀàĞÍ£¬Êı¾İÓÀ²»¹ıÆÚ <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key    ¼ü
-	 * @param value  Öµ
-	 * @param type    Êı¾İÀàĞÍ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šæ•°æ®ç±»å‹ï¼Œæ•°æ®æ°¸ä¸è¿‡æœŸ <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key    é”®
+	 * @param value  å€¼
+	 * @param type    æ•°æ®ç±»å‹
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -335,13 +335,13 @@ public class DataManager {
 	}
 	
 	/**
-	 * ½«¶ÔÏóÊı¾İ´æ·ÅÈë»º´æÖĞ²¢Ö¸¶¨¹ıÆÚÊ±¼äºÍÊı¾İÀàĞÍ <br>
-	 * ¶ÔÏóĞòÁĞ»¯ºóµÄ³¤¶È²»ÄÜ³¬¹ı 1000000 Byte
-	 * @param key     ¼ü
-	 * @param value   Öµ
-	 * @param exp     ¹ıÆÚÊ±¼ä
-	 * @param type    Êı¾İÀàĞÍ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * å°†å¯¹è±¡æ•°æ®å­˜æ”¾å…¥ç¼“å­˜ä¸­å¹¶æŒ‡å®šè¿‡æœŸæ—¶é—´å’Œæ•°æ®ç±»å‹ <br>
+	 * å¯¹è±¡åºåˆ—åŒ–åçš„é•¿åº¦ä¸èƒ½è¶…è¿‡ 1000000 Byte
+	 * @param key     é”®
+	 * @param value   å€¼
+	 * @param exp     è¿‡æœŸæ—¶é—´
+	 * @param type    æ•°æ®ç±»å‹
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -350,9 +350,9 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄ¶ÔÏó£¬ ·µ»ØµÄÊÇ±£´æµÄ¶ÔÏóÀàĞÍ£¬Ê¹ÓÃµÄÊ±ºòĞèÒª½øĞĞÇ¿ÖÆ×ª»»
-	 * @param key   ¼ü
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„å¯¹è±¡ï¼Œ è¿”å›çš„æ˜¯ä¿å­˜çš„å¯¹è±¡ç±»å‹ï¼Œä½¿ç”¨çš„æ—¶å€™éœ€è¦è¿›è¡Œå¼ºåˆ¶è½¬æ¢
+	 * @param key   é”®
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
@@ -361,10 +361,10 @@ public class DataManager {
 	}
 	
 	/**
-	 * »ñÈ¡Ö¸¶¨¼üºÍÊı¾İÀàĞÍµÄ¶ÔÏó£¬ ·µ»ØµÄÊÇ±£´æµÄ¶ÔÏóÀàĞÍ£¬Ê¹ÓÃµÄÊ±ºòĞèÒª½øĞĞÇ¿ÖÆ×ª»»
-	 * @param key    ¼ü
-	 * @param type   Êı¾İÀàĞÍ
-	 * @param single ÊÇ·ñµ¥¸öÓ¦ÓÃÊ¹ÓÃ£¬Èç¹ûÒª¿çjvm¶à¸öÓ¦ÓÃÊ¹ÓÃ¸ö£¬Ôò¸ÃÖµĞèÒªÖÃÎªfalse
+	 * è·å–æŒ‡å®šé”®å’Œæ•°æ®ç±»å‹çš„å¯¹è±¡ï¼Œ è¿”å›çš„æ˜¯ä¿å­˜çš„å¯¹è±¡ç±»å‹ï¼Œä½¿ç”¨çš„æ—¶å€™éœ€è¦è¿›è¡Œå¼ºåˆ¶è½¬æ¢
+	 * @param key    é”®
+	 * @param type   æ•°æ®ç±»å‹
+	 * @param single æ˜¯å¦å•ä¸ªåº”ç”¨ä½¿ç”¨ï¼Œå¦‚æœè¦è·¨jvmå¤šä¸ªåº”ç”¨ä½¿ç”¨ä¸ªï¼Œåˆ™è¯¥å€¼éœ€è¦ç½®ä¸ºfalse
 	 * @return
 	 * @throws DataLoadException
 	 */
